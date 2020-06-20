@@ -1,1 +1,4 @@
 This contains the Python code for Image and Video captioning model.
+
+dataset/
+This folder contains the data to train on.
