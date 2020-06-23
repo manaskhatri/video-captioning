@@ -2,3 +2,14 @@ This contains the Python code for Image and Video captioning model.
 
 dataset/
 This folder contains the data to train on.
+
+Steps:
+
+1. Create a folder named dataset
+
+2. Add dataset in following directory structure:
+
+dataset/
+  flickr30k_images/
+    flickr30k_images/
+    results.csv
