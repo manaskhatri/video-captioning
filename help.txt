@@ -3,6 +3,10 @@ This contains the Python code for Image and Video captioning model.
 dataset/
 This folder contains the data to train on.
 
+For downloading Video Data, use the following links:
+Video Clips: http://www.cs.utexas.edu/users/ml/clamp/videoDescription/YouTubeClips.tar
+Video Captions: https://github.com/jazzsaxmafia/video_to_sequence/files/387979/video_corpus.csv.zip
+
 Steps:
 
 1. Create a folder named dataset
@@ -13,3 +17,6 @@ dataset/
   flickr30k_images/
     flickr30k_images/
     results.csv
+  msvd_videos/
+    msvd_videos/
+    video_corpus.csv
