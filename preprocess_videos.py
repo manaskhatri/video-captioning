@@ -4,6 +4,9 @@ import os
 import cv2
 import matplotlib.pyplot as plt
 import math
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.vgg16 import VGG16
+from tensorflow.keras.applications.vgg16 import preprocess_input
 
 def load_df(path):
     """
@@ -113,6 +116,41 @@ def load_video_frames(frames_path, videos_selected):
             img = plt.imread('dataset/msvd_videos/frames/' + video_name +"/"+ img_name)
             img = cv2.resize(img, (224, 224)) #Resize to 224x224
             l.append(img)
+            count+=1
+
+        print("Loading for", video_name)
+        X.append(l)
+
+    X = np.array(X)
+    return X
+
+def extract_features(frames_path, videos_selected):
+    """
+    Extracting features from the Frames using VGG16 pretrained model. Output is of shape (n, 15, 25088): For n videos and 15 frames for each video
+
+    frames_path: path to the folder which contains the frames
+    videos_selected: list of final video names which meet the min frames threshold
+    """
+    model = VGG16(weights='imagenet', include_top=False)
+
+    X = []
+    for video_name in videos_selected:
+        l = []
+        count = 0
+
+        for img_name in os.listdir(frames_path+video_name):
+            if count==15:
+                break
+
+            img_path = 'dataset/msvd_videos/frames/' + video_name + "/"+img_name
+            img = image.load_img(img_path, target_size=(224, 224))
+            img_data = image.img_to_array(img)
+            img_data = np.expand_dims(img_data, axis=0)
+            img_data = preprocess_input(img_data)
+
+            features = model.predict(img_data)
+            features = features.flatten()
+            l.append(features)
             count+=1
 
         print("Loading for", video_name)
