@@ -7,6 +7,7 @@ import math
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
+from tensorflow.keras import Model
 
 def load_df(path):
     """
@@ -131,7 +132,8 @@ def extract_features(frames_path, videos_selected):
     frames_path: path to the folder which contains the frames
     videos_selected: list of final video names which meet the min frames threshold
     """
-    model = VGG16(weights='imagenet', include_top=False)
+    model = VGG16(weights='imagenet', include_top=True)
+    feature_extractor = Model(model.input, model.get_layer('fc2').output)
 
     X = []
     for video_name in videos_selected:
@@ -148,7 +150,7 @@ def extract_features(frames_path, videos_selected):
             img_data = np.expand_dims(img_data, axis=0)
             img_data = preprocess_input(img_data)
 
-            features = model.predict(img_data)
+            features = feature_extractor.predict(img_data)
             features = features.flatten()
             l.append(features)
             count+=1
