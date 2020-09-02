@@ -7,3 +7,6 @@ __pycache__/
 
 ### Dataset ###
 dataset/
+
+### Features ###
+video_features_vgg16.npy

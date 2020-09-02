@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import cv2
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import math
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import VGG16
@@ -97,6 +98,21 @@ def select_videos(videos_final, frames_path, min_frames):
             videos_selected.append(video_name)
 
     return videos_selected
+
+def view_frames(video_path):
+    """
+    View the frames given the video path.
+    """
+    frames = os.listdir(video_path)
+    n = len(frames)
+    frames = os.listdir(video_path)
+    n = len(frames)
+    f = plt.figure()
+    for i in range(n):
+        # Debug, plot figure
+        img = mpimg.imread(video_path+'/frame'+str(i)+'.jpg')
+        plt.imshow(img)
+        plt.figure()
 
 def load_video_frames(frames_path, videos_selected):
     """
