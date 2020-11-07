@@ -9,4 +9,4 @@ __pycache__/
 dataset/
 
 ### Features ###
-video_features_vgg16.npy
+*.npy

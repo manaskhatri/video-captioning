@@ -7,7 +7,11 @@ import matplotlib.image as mpimg
 import math
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import VGG16
-from tensorflow.keras.applications.vgg16 import preprocess_input
+from tensorflow.keras.applications.vgg16 import preprocess_input as preprocess_input_vgg16
+from tensorflow.keras.applications.resnet50 import ResNet50
+from tensorflow.keras.applications.resnet50 import preprocess_input as preprocess_input_resnet50
+from tensorflow.keras.applications.inception_v3 import InceptionV3
+from tensorflow.keras.applications.inception_v3 import preprocess_input as preprocess_input_inception_v3
 from tensorflow.keras import Model
 
 def load_df(path):
@@ -164,7 +168,79 @@ def extract_features(frames_path, videos_selected):
             img = image.load_img(img_path, target_size=(224, 224))
             img_data = image.img_to_array(img)
             img_data = np.expand_dims(img_data, axis=0)
-            img_data = preprocess_input(img_data)
+            img_data = preprocess_input_vgg16(img_data)
+
+            features = feature_extractor.predict(img_data)
+            features = features.flatten()
+            l.append(features)
+            count+=1
+
+        print("Loading for", video_name)
+        X.append(l)
+
+    X = np.array(X)
+    return X
+
+def extract_features_resnet50(frames_path, videos_selected):
+    """
+    Extracting features from the Frames using ResNet50 pretrained model. Output is of shape (n, 15, 2048): For n videos and 15 frames for each video
+
+    frames_path: path to the folder which contains the frames
+    videos_selected: list of final video names which meet the min frames threshold
+    """
+    model = ResNet50(weights='imagenet', include_top=True)
+    feature_extractor = Model(model.input, model.get_layer('avg_pool').output)
+
+    X = []
+    for video_name in videos_selected:
+        l = []
+        count = 0
+
+        for img_name in os.listdir(frames_path+video_name):
+            if count==15:
+                break
+
+            img_path = 'dataset/msvd_videos/frames/' + video_name + "/"+img_name
+            img = image.load_img(img_path, target_size=(224, 224))
+            img_data = image.img_to_array(img)
+            img_data = np.expand_dims(img_data, axis=0)
+            img_data = preprocess_input_resnet50(img_data)
+
+            features = feature_extractor.predict(img_data)
+            features = features.flatten()
+            l.append(features)
+            count+=1
+
+        print("Loading for", video_name)
+        X.append(l)
+
+    X = np.array(X)
+    return X
+
+def extract_features_inception_v3(frames_path, videos_selected):
+    """
+    Extracting features from the Frames using InceptionV3 pretrained model. Output is of shape (n, 15, 2048): For n videos and 15 frames for each video
+
+    frames_path: path to the folder which contains the frames
+    videos_selected: list of final video names which meet the min frames threshold
+    """
+    model = InceptionV3(weights='imagenet', include_top=True)
+    feature_extractor = Model(model.input, model.get_layer('avg_pool').output)
+
+    X = []
+    for video_name in videos_selected:
+        l = []
+        count = 0
+
+        for img_name in os.listdir(frames_path+video_name):
+            if count==15:
+                break
+
+            img_path = 'dataset/msvd_videos/frames/' + video_name + "/"+img_name
+            img = image.load_img(img_path, target_size=(299, 299))
+            img_data = image.img_to_array(img)
+            img_data = np.expand_dims(img_data, axis=0)
+            img_data = preprocess_input_inception_v3(img_data)
 
             features = feature_extractor.predict(img_data)
             features = features.flatten()
